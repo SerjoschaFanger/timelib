@@ -141,7 +141,7 @@ int exists_date(int day, int month, int year)
 *           5, if date is friday 0
 *           6, if date is saturday 1
 *           -1, if date is invalid
-* Function : Returns week day of a date of the Gregorian calender between 1582 and 2400
+* Function : Returns week day of a date of the Gregorian calendar between 1582 and 2400
 **/
 int week_day(int day, int month, int year)
 {
@@ -291,6 +291,21 @@ int days_from_to(int day_from, int month_from, int year_from
         {
             result -= day_of_the_year(day_to, month_to, year_to);
             result -= from_date_to_end_of_year(day_from, month_from, year_from);
+        }
+        return result;
+    }
+    return -1;
+}
+
+int calendar_week(int day, int month, int year)
+{
+    if(exists_date(day, month, year))
+    {
+        int result = 0;
+        result = day_of_the_year(day, month, year) / 7;
+        if((day_of_the_year(day, month, year)%7) != 0)
+        {
+            result++;
         }
         return result;
     }

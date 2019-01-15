@@ -9,5 +9,5 @@ int days_from_to(int day_from, int month_from, int year_from
                  , int day_to, int month_to, int year_to);
 int from_date_to_end_of_year(int day, int month, int year);
 int week_day(int day, int month, int year);
-
+int calendar_week(int day, int month, int year);
 #endif // TIME_H_INCLUDED
