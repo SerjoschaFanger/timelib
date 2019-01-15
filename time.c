@@ -297,6 +297,14 @@ int days_from_to(int day_from, int month_from, int year_from
     return -1;
 }
 
+/**
+* Name : calendar_week
+* Param : int day, int month, int year
+* Returns :
+*           the calendar week of given date
+*           -1, if date is invalid
+* Function : Returns the calendar week of given date
+**/
 int calendar_week(int day, int month, int year)
 {
     if(exists_date(day, month, year))
