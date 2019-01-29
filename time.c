@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "time.h"
 
 /**
@@ -31,7 +32,7 @@ int day_of_the_year(int day, int month, int year)
 
 /**
 * Name : isLeapyear
-* Param : int year
+* Param : int yearprintf()
 * Returns :
 *           0, if year is not a leap year
 *           1, if year is a leap year
@@ -318,6 +319,48 @@ int calendar_week(int day, int month, int year)
         return result;
     }
     return -1;
+}
+
+
+/**
+* Name : input_date
+* Param : int *day, int *month, int *year
+* Returns : -
+* Function : Prompts user to input day, month and year of a date
+*            until criteria of gregorian calender are met
+**/
+void input_date(int *day, int *month, int *year)
+{
+    int dateValid = 0;
+    int dayV = 0;
+    int monthV = 0;
+    int yearV = 0;
+    do
+    {
+        do
+        {
+            printf("Please enter valid day of date:\n");
+            scanf("%i", &dayV);
+        }while(dayV < 1 || dayV > 31);
+
+        do
+        {
+            printf("Please enter valid month of date:\n");
+            scanf("%i", &monthV);
+        }while(monthV < 1 || monthV > 12);
+
+        do
+        {
+            printf("Please enter valid year of date:\n");
+            scanf("%i", &yearV);
+        }while(yearV < 1582 || yearV > 2400);
+
+        dateValid = exists_date(dayV, monthV, yearV);
+
+    }while(dateValid == 0);
+    *day = dayV;
+    *month = monthV;
+    *year = yearV;
 }
 
 

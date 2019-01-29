@@ -19,8 +19,17 @@ int main()
     printf("%i\n",week_day(20,9,2019));
     printf("%i\n",week_day(21,9,2019));
     printf("%i\n",week_day(22,9,2019));*/
-    printf("%i\n", calendar_week(15,12,2019));
+    //printf("%i\n", calendar_week(15,12,2019));
+    int d = 0;
+    int m = 0;
+    int y = 0;
 
+    int *day = &d;
+    int *month = &m;
+    int *year = &y;
+
+    input_date(day, month, year);
+    printf("Entered Date: %i.%i.%i\n", d, m, y);
     return 0;
 }
 
