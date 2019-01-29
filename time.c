@@ -331,7 +331,6 @@ int calendar_week(int day, int month, int year)
 **/
 void input_date(int *day, int *month, int *year)
 {
-    int dateValid = 0;
     int dayV = 0;
     int monthV = 0;
     int yearV = 0;
@@ -355,9 +354,8 @@ void input_date(int *day, int *month, int *year)
             scanf("%i", &yearV);
         }while(yearV < 1582 || yearV > 2400);
 
-        dateValid = exists_date(dayV, monthV, yearV);
+    }while(exists_date(dayV, monthV, yearV) == 0);
 
-    }while(dateValid == 0);
     *day = dayV;
     *month = monthV;
     *year = yearV;
