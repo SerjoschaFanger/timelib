@@ -1,14 +1,21 @@
 #ifndef TIME_H_INCLUDED
 #define TIME_H_INCLUDED
 
+struct date
+{
+    int day;
+    int month;
+    int year;
+};
+
 void input_date(int *day, int *month, int *year);
 int get_days_for_month(int month, int year);
-int exists_date(int day, int month, int year);
-int day_of_the_year(int day, int month, int year);
+int exists_date(struct date date);
+int day_of_the_year(struct date date);
 int isLeapyear(int year);
-int days_from_to(int day_from, int month_from, int year_from
-                 , int day_to, int month_to, int year_to);
-int from_date_to_end_of_year(int day, int month, int year);
-int week_day(int day, int month, int year);
-int calendar_week(int day, int month, int year);
+int days_from_to(struct date date_from, struct date date_to);
+int from_date_to_end_of_year(struct date date);
+int week_day(struct date date);
+int calendar_week(struct date date);
+void input_date_struct(struct date *date);
 #endif // TIME_H_INCLUDED

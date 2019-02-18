@@ -4,6 +4,7 @@
 #include <string.h>
 #include "time.h"
 
+
 /**
 * Name : day_of_the_year
 * Param : int day, int month, int year
@@ -12,16 +13,16 @@
 *          -1, if date invalid
 * Function : Returns the day of the year according to input
 **/
-int day_of_the_year(int day, int month, int year)
+int day_of_the_year(struct date date)
 {
     int days = 0;
-    if(exists_date(day,month,year))
+    if(exists_date(date))
     {
-        for(int i = 0; i < month; i++)
+        for(int i = 0; i < date.month; i++)
         {
-           days += get_days_for_month(i+1, year);
+            days += get_days_for_month(i+1, date.year);
         }
-        days -= get_days_for_month(month, year) - day;
+        days -= get_days_for_month(date.month, date.year) - date.day;
     }else
     {
         return -1;
@@ -109,17 +110,17 @@ int get_days_for_month(int month, int year)
 *           1, if date is valid
 * Function : Checks if input date is in fact a date of the Gregorian calender between 1582 and 2400
 **/
-int exists_date(int day, int month, int year)
+int exists_date(struct date date)
 {
-    if(year < 1582 || year > 2400)
+    if(date.year < 1582 || date.year > 2400)
     {
         return 0;
     }else
     {
-        if(get_days_for_month(month, year) == -1)
+        if(get_days_for_month(date.month, date.year) == -1)
         {
             return 0;
-        }else if(get_days_for_month(month, year) < day || day <= 0)
+        }else if(get_days_for_month(date.month, date.year) < date.day || date.day <= 0)
         {
             return 0;
         }else
@@ -144,14 +145,18 @@ int exists_date(int day, int month, int year)
 *           -1, if date is invalid
 * Function : Returns week day of a date of the Gregorian calendar between 1582 and 2400
 **/
-int week_day(int day, int month, int year)
+int week_day(struct date date)
 {
     int diff = 0;
-    if(days_from_to(day, month, year, 1, 1, 1582) == -1)
+    struct date startDate;
+    startDate.day = 1;
+    startDate.month = 1;
+    startDate.year = 1582;
+    if(days_from_to(date, startDate) == -1)
     {
         return -1;
     }
-    diff = days_from_to(day, month, year, 1, 1, 1582);
+    diff = days_from_to(date, startDate);
     int weekday = diff % 7;
     if(weekday < 2)
     {
@@ -172,18 +177,18 @@ int week_day(int day, int month, int year)
 *           -1, if date is invalid
 * Function : Returns the days remaining to the end of the year, accounting for leap years
 **/
-int from_date_to_end_of_year(int day, int month, int year)
+int from_date_to_end_of_year(struct date date)
 {
     int result = 0;
-    if(exists_date(day, month, year))
+    if(exists_date(date))
     {
-        if(isLeapyear(year))
+        if(isLeapyear(date.year))
         {
-            result = 366 - day_of_the_year(day, month, year);
+            result = 366 - day_of_the_year(date);
             return result;
         }else
         {
-            result = 365 - day_of_the_year(day, month, year);
+            result = 365 - day_of_the_year(date);
             return result;
         }
     }
@@ -200,23 +205,22 @@ int from_date_to_end_of_year(int day, int month, int year)
 * Function : Returns the day differential between two dates in the gregorian calender,
 *            works for bigger "from-date" to "to-date" and reverse
 **/
-int days_from_to(int day_from, int month_from, int year_from
-                 , int day_to, int month_to, int year_to)
+int days_from_to(struct date date_from, struct date date_to)
 {
     // check if both dates given are valid
-    if(exists_date(day_from, month_from, year_from) && exists_date(day_to, month_to, year_to))
+    if(exists_date(date_from) && exists_date(date_to))
     {
         int result = 0;
         int flipped = 0;
-        int year_difference = year_from - year_to;
+        int year_difference = date_from.year - date_to.year;
         // if we are in the same year
         if(year_difference == 0)
         {
             // .. and the same month
-            if(month_from == month_to)
+            if(date_from.month == date_to.month)
             {
                 // calculate day differential
-                result = day_from - day_to;
+                result = date_from.day - date_to.day;
                 // in case day_to was bigger, flip the result
                 if(result < 0)
                 {
@@ -226,7 +230,7 @@ int days_from_to(int day_from, int month_from, int year_from
             }
             else
             {
-                int month_difference = month_from - month_to;
+                int month_difference = date_from.month - date_to.month;
                 // in case month_to was bigger, flip the result
                 if(month_difference < 0)
                 {
@@ -246,20 +250,20 @@ int days_from_to(int day_from, int month_from, int year_from
                     // add onto the result depending on the direction
                     if(flipped)
                     {
-                        result += get_days_for_month((month_to-i), year_from);
+                        result += get_days_for_month((date_to.month-i), date_from.year);
                     }else
                     {
-                        result += get_days_for_month((month_from-i), year_from);
+                        result += get_days_for_month((date_from.month-i), date_from.year);
                     }
                 }
                 // detract remaining days from the result depending on the direction
                 if(!flipped)
                 {
-                    result -= get_days_for_month(month_from, year_from) - day_from;
-                    result -= get_days_for_month(month_to, year_to) - day_to;
+                    result -= get_days_for_month(date_from.month, date_from.year) - date_from.day;
+                    result -= get_days_for_month(date_to.month, date_to.year) - date_to.day;
                 }else
                 {
-                    result -= day_from;
+                    result -= date_from.day;
                 }
                 return result;
             }
@@ -274,7 +278,7 @@ int days_from_to(int day_from, int month_from, int year_from
         for(int i = 0; i < year_difference; i++)
         {
             // add full years to the result depending if leapyear or not
-            if(isLeapyear(year_from-i))
+            if(isLeapyear(date_from.year-i))
             {
                 result += 366;
             }else
@@ -283,15 +287,15 @@ int days_from_to(int day_from, int month_from, int year_from
             }
         }
         // detract from the result depending on the direction
-        if(year_from < year_to)
+        if(date_from.year < date_to.year)
         {
-            result -= day_of_the_year(day_from, month_from, year_from);
-            result -= from_date_to_end_of_year(day_to, month_to, year_to);
+            result -= day_of_the_year(date_from);
+            result -= from_date_to_end_of_year(date_to);
 
-        }else if(year_from > year_to)
+        }else if(date_from.year > date_to.year)
         {
-            result -= day_of_the_year(day_to, month_to, year_to);
-            result -= from_date_to_end_of_year(day_from, month_from, year_from);
+            result -= day_of_the_year(date_to);
+            result -= from_date_to_end_of_year(date_from);
         }
         return result;
     }
@@ -306,13 +310,13 @@ int days_from_to(int day_from, int month_from, int year_from
 *           -1, if date is invalid
 * Function : Returns the calendar week of given date
 **/
-int calendar_week(int day, int month, int year)
+int calendar_week(struct date date)
 {
-    if(exists_date(day, month, year))
+    if(exists_date(date))
     {
         int result = 0;
-        result = day_of_the_year(day, month, year) / 7;
-        if((day_of_the_year(day, month, year)%7) != 0)
+        result = day_of_the_year(date) / 7;
+        if((day_of_the_year(date)%7) != 0)
         {
             result++;
         }
@@ -331,34 +335,70 @@ int calendar_week(int day, int month, int year)
 **/
 void input_date(int *day, int *month, int *year)
 {
-    int dayV = 0;
-    int monthV = 0;
-    int yearV = 0;
+    struct date date;
+    date.day = 0;
+    date.month = 0;
+    date.year = 0;
     do
     {
         do
         {
             printf("Please enter valid day of date:\n");
-            scanf("%i", &dayV);
-        }while(dayV < 1 || dayV > 31);
+            scanf("%i", &date.day);
+        }while(date.day < 1 || date.day > 31);
 
         do
         {
             printf("Please enter valid month of date:\n");
-            scanf("%i", &monthV);
-        }while(monthV < 1 || monthV > 12);
+            scanf("%i", &date.month);
+        }while(date.month < 1 || date.month > 12);
 
         do
         {
             printf("Please enter valid year of date:\n");
-            scanf("%i", &yearV);
-        }while(yearV < 1582 || yearV > 2400);
+            scanf("%i", &date.year);
+        }while(date.year < 1582 || date.year > 2400);
 
-    }while(exists_date(dayV, monthV, yearV) == 0);
+    }while(exists_date(date) == 0);
 
-    *day = dayV;
-    *month = monthV;
-    *year = yearV;
+    *day = date.day;
+    *month = date.month;
+    *year = date.year;
+}
+
+void input_date_struct(struct date *date)
+{
+    struct date temp;
+    temp.day = 0;
+    temp.month = 0;
+    temp.year = 0;
+
+    do
+    {
+        do
+        {
+            printf("Please enter valid day of date:\n");
+            scanf("%i", &temp.day);
+        }while(temp.day < 1 || temp.day > 31);
+
+        do
+        {
+            printf("Please enter valid month of date:\n");
+            scanf("%i", &temp.month);
+        }while(temp.month < 1 || temp.month > 12);
+
+        do
+        {
+            printf("Please enter valid year of date:\n");
+            scanf("%i", &temp.year);
+        }while(temp.year < 1582 || temp.year > 2400);
+
+    }while(exists_date(temp) == 0);
+
+    date->day = temp.day;
+    date->month = temp.month;
+    date->year = temp.year;
+
 }
 
 
