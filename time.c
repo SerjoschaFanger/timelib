@@ -195,6 +195,20 @@ int from_date_to_end_of_year(struct date date)
     return -1;
 }
 
+int _days_from_to(struct date date_from, struct date date_to)
+{
+    if(exists_date(date_from) && exists_date(date_to))
+    {
+        if (date_from.year > date_to.year)
+        {
+            return days_from_to(date_to, date_from);
+        }else
+        {
+            return days_from_to(date_from, date_to);
+        }
+    }
+    return 0;
+}
 /**
 * Name : days_from_to
 * Param : int day_from, int month_from, int year_from
@@ -207,11 +221,7 @@ int from_date_to_end_of_year(struct date date)
 **/
 int days_from_to(struct date date_from, struct date date_to)
 {
-    // check if both dates given are valid
-    if(exists_date(date_from) && exists_date(date_to))
-    {
         int result = 0;
-        int flipped = 0;
         int year_difference = date_from.year - date_to.year;
         // if we are in the same year
         if(year_difference == 0)
@@ -235,43 +245,22 @@ int days_from_to(struct date date_from, struct date date_to)
                 if(month_difference < 0)
                 {
                     month_difference = month_difference*-1;
-                    flipped = 1;
                 }
                 /**
                 *   Following block calculates the days for all months,
                 *   assuming year_from and year_to are the same
                 **/
-                if(flipped)
-                {
-                    month_difference += 1;
-                }
+
                 for(int i = 0; i < month_difference; i++)
                 {
                     // add onto the result depending on the direction
-                    if(flipped)
-                    {
-                        result += get_days_for_month((date_to.month-i), date_from.year);
-                    }else
-                    {
-                        result += get_days_for_month((date_from.month-i), date_from.year);
-                    }
+                    result += get_days_for_month((date_from.month-i), date_from.year);
                 }
                 // detract remaining days from the result depending on the direction
-                if(!flipped)
-                {
-                    result -= get_days_for_month(date_from.month, date_from.year) - date_from.day;
-                    result -= get_days_for_month(date_to.month, date_to.year) - date_to.day;
-                }else
-                {
-                    result -= date_from.day;
-                }
+                result -= get_days_for_month(date_from.month, date_from.year) - date_from.day;
+                result -= get_days_for_month(date_to.month, date_to.year) - date_to.day;
                 return result;
             }
-        }
-        // in case year_to was bigger than year_from, flip the result
-        else if(year_difference < 0)
-        {
-            year_difference = year_difference*-1;
         }
         // add one extra year for the for-loop
         year_difference += 1;
@@ -287,18 +276,9 @@ int days_from_to(struct date date_from, struct date date_to)
             }
         }
         // detract from the result depending on the direction
-        if(date_from.year < date_to.year)
-        {
-            result -= day_of_the_year(date_from);
-            result -= from_date_to_end_of_year(date_to);
-
-        }else if(date_from.year > date_to.year)
-        {
-            result -= day_of_the_year(date_to);
-            result -= from_date_to_end_of_year(date_from);
-        }
+        result -= day_of_the_year(date_from);
+        result -= from_date_to_end_of_year(date_to);
         return result;
-    }
     return -1;
 }
 

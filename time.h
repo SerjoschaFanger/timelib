@@ -20,6 +20,7 @@ int get_days_for_month(int month, int year);
 int exists_date(struct date date);
 int day_of_the_year(struct date date);
 int isLeapyear(int year);
+int _days_from_to(struct date date_from, struct date date_to);
 int days_from_to(struct date date_from, struct date date_to);
 int from_date_to_end_of_year(struct date date);
 int week_day(struct date date);
