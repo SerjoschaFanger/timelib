@@ -1,6 +1,13 @@
 #ifndef TIME_H_INCLUDED
 #define TIME_H_INCLUDED
 
+/**
+*   Date    : 26.02.2019
+*   Author  : Serjoscha Fanger
+*   Function: Library provides basic date related functions,
+*             like determining if a date is valid or what day of the year it is.
+**/
+
 struct date
 {
     int day;
